@@ -1,12 +1,16 @@
 import os
+from environs import Env
+
+
+env = Env()
+env.read_env()
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SECRET_KEY = '3nyaco58edr$-dd)=$l%@fj@9ww)ucgc(5zek(a&(n(q6u@ds1'
+SECRET_KEY = env('SECRET_KEY', '3nyaco58edr$-dd)=$l%@fj@9ww)ucgc(5zek(a&(n(q6u@ds1')
 
-DEBUG = True
-
-ALLOWED_HOSTS = []
+DEBUG = env.bool('DEBUG', True)
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', ['127.0.0.1', 'localhost'])
 
 
 
@@ -17,7 +21,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'foodplan_app.apps.FoodplanAppConfig'
+    'foodplan_app.apps.FoodplanAppConfig',
+    'crispy_forms'
 ]
 
 MIDDLEWARE = [
@@ -89,3 +94,7 @@ USE_TZ = True
 
 
 STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
