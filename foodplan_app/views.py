@@ -8,12 +8,11 @@ from django import views
 from .forms import RegisterUserForm, LoginUserForm
 
 
-
 class BaseViews(views.View):
     def get(self, request, *args, **kwargs):
-        return render(request, 'base.html', {})
-
-
+        title = 'План питания на неделю, меню, рецепты, список покупок. Классическое меню, безуглеводное меню'
+        context = {'title': title}
+        return render(request, 'base.html', context)
 
 
 class RegistrationView(CreateView):
@@ -23,6 +22,7 @@ class RegistrationView(CreateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['title'] = 'Foodplan 2021 - Меню на неделю FOODPLAN'
         return context
 
     def form_valid(self, form):
@@ -31,13 +31,13 @@ class RegistrationView(CreateView):
         return redirect('base')
 
 
-
 class LoginUserView(LoginView):
     form_class = LoginUserForm
     template_name = 'login.html'
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['title'] = 'Foodplan 2021 - Меню на неделю FOODPLAN'
         return context
 
     def get_success_url(self):
