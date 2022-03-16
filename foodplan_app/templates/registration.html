@@ -6,7 +6,7 @@
     <header>
         <nav class="navbar navbar-expand-md navbar-light fixed-top navbar__opacity">
             <div class="container">
-                <a class="navbar-brand" href="#">
+                <a class="navbar-brand" href="{% url 'base' %}">
                     <img src="{% static 'img/logo.8d8f24edbb5f.svg' %}" height="55" width="189" alt="">
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse1"
@@ -28,7 +28,7 @@
                             <a class="nav-link active" aria-current="page" href="#">Контакты</a>
                         </li>
                         <li class="nav-item align-items-center d-md-flex flex-grow-1 justify-content-end">
-                            <button class="btn btn-outline-success me-2 foodplan_green foodplan__border_green">Подписка</button>
+                            <a class="btn btn-outline-success foodplan_green foodplan__border_green" href="{% url 'order' %}" role="button">Подписка</a>
                             <button class="btn btn-outline-success foodplan_green foodplan__border_green">Войти</button>
                         </li>
                     </ul>
@@ -40,7 +40,7 @@
         <section>
             <div class="container">
                 <div class="card p-3 mb-5 foodplan__shadow">
-                    <a href="{% url 'base' %}" class="link-secondary fw-light foodplan__backButton">
+                    <a href="{% url 'login' %}" class="link-secondary fw-light foodplan__backButton">
                         <svg xmlns="http://www.w3.org/2000/svg" width="9%" height="9%" fill="currentColor" class="bi bi-arrow-left-circle"
                             viewBox="0 0 16 16">
                             <path fill-rule="evenodd"

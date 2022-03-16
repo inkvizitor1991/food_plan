@@ -15,6 +15,11 @@ class BaseViews(views.View):
         return render(request, 'base.html', context)
 
 
+class OrderViews(views.View):
+    def get(self, request, *args, **kwargs):
+        return render(request, 'order.html', {})
+
+
 class RegistrationView(CreateView):
     form_class = RegisterUserForm
     template_name = 'registration.html'
