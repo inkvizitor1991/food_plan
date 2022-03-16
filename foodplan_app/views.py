@@ -1,10 +1,10 @@
+from django import views
 from django.contrib.auth import login
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
-from django import views
-
+from django.contrib.auth.models import User
 
 from .forms import RegisterUserForm, LoginUserForm
 
@@ -22,11 +22,13 @@ class OrderViews(views.View):
         context = {'title': title}
         return render(request, 'order.html', context)
 
+
 class AccountViews(views.View):
     def get(self, request, *args, **kwargs):
         title ='Foodplan 2021 - Меню на неделю FOODPLAN'
         context = {'title': title}
         return render(request, 'account.html', context)
+
 
 class RegistrationView(CreateView):
     form_class = RegisterUserForm
