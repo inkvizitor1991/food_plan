@@ -17,8 +17,15 @@ class BaseViews(views.View):
 
 class OrderViews(views.View):
     def get(self, request, *args, **kwargs):
-        return render(request, 'order.html', {})
+        title ='Foodplan 2021 - Меню на неделю FOODPLAN'
+        context = {'title': title}
+        return render(request, 'order.html', context)
 
+class AccountViews(views.View):
+    def get(self, request, *args, **kwargs):
+        title ='Foodplan 2021 - Меню на неделю FOODPLAN'
+        context = {'title': title}
+        return render(request, 'account.html', context)
 
 class RegistrationView(CreateView):
     form_class = RegisterUserForm
@@ -46,4 +53,4 @@ class LoginUserView(LoginView):
         return context
 
     def get_success_url(self):
-        return reverse_lazy('base')
+        return reverse_lazy('account')
