@@ -50,8 +50,7 @@
                     <h2 class="text-center"><strong>Авторизация</strong></h2>
                 </div>
                 <div class="card px-5 py-3 d-flex align-items-center foodplan__shadow">
-                    <form method="POST">
-                      {% csrf_token %}
+                    <form method="POST">{% csrf_token %}
                       {{ form|crispy }}
                         <div class="row mb-3">
                             <div class="col-12 col-sm-6 mt-3">
