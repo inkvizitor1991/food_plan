@@ -18,23 +18,12 @@ class BaseViews(views.View):
         return render(request, 'base.html', context)
 
 
-#class OrderViews(ListView):
-#    form_class = OrderForm
-#    template_name = 'order.html'
-#
-#    def get_context_data(self, *args, **kwargs):
-#        context = super().get_context_data(**kwargs)
-#        context['title'] = 'Foodplan 2021 - Меню на неделю FOODPLAN'
-#        return context
-
 def order(request):
     title = 'Foodplan 2021 - Меню на неделю FOODPLAN'
     if request.method == 'POST':
         form = OrderForm(request.POST)
         if form.is_valid():
-            print(form.cleaned_data)
             form.save()
-            #User.objects.create(**form.cleaned_data)
             return redirect('home')
     else:
         form = OrderForm()
