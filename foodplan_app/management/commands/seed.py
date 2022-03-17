@@ -5,7 +5,7 @@ from django.conf import settings
 from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand
 
-from foodplan_app.models import MenuType, Meal, Recipe
+from foodplan_app.models import MenuType, Meal, Recipe, Product, RecipeItem
 
 
 RECIPE_API_URL = 'https://api.edamam.com/api/recipes/v2?type=public'
@@ -21,24 +21,41 @@ MEAL_TYPES = {
 
 
 class Command(BaseCommand):
-    help = 'Seed employees data'
+    help = 'Seed recipes data'
+
+    def add_arguments(self, parser):
+        parser.add_argument('--pages')
+        parser.add_argument('--search')
 
     def handle(self, *args, **options):
         app_id = settings.EDAMAM_APP_ID
         app_key = settings.EDAMAM_APP_KEY
         next_link = RECIPE_API_URL
         recipes_to_create = []
+        recipes_items_to_create = []
+
+        pages = options['pages']
+        if not pages:
+            pages = 1
+        search = options['search']
+        if not search:
+            search = ''
 
         existed_recipe_names = list(Recipe.objects.all().values_list(
             'name',
             flat=True
         ))
 
-        for _ in range(3):
+        existed_products = {
+            product.name: product
+            for product in Product.objects.all()
+        }
+
+        for _ in range(pages):
             response = requests.get(
                 url=next_link,
                 params={
-                    'q': '',
+                    'q': search,
                     'app_id': app_id,
                     'app_key': app_key,
                     'imageSize': 'LARGE'
@@ -99,8 +116,34 @@ class Command(BaseCommand):
 
                 recipes_to_create.append(recipe_to_create)
 
+                for ingredient in recipe['ingredients']:
+                    product_name = ingredient['food']
+                    if product_name in existed_products:
+                        product = existed_products[product_name]
+                    else:
+                        product = Product.objects.create(
+                            name=product_name
+                        )
+                        existed_products[product.name] = product
+
+                    quantity = (f"{ingredient['quantity']} "
+                                f"{ingredient['measure']}")
+
+                    recipe_item = RecipeItem(
+                        recipe=recipe_to_create,
+                        product=product,
+                        quantity=quantity,
+                        price=0
+                    )
+
+                    recipes_items_to_create.append(recipe_item)
+
         Recipe.objects.bulk_create(
             recipes_to_create,
+            ignore_conflicts=True
+        )
+        RecipeItem.objects.bulk_create(
+            recipes_items_to_create,
             ignore_conflicts=True
         )
 
