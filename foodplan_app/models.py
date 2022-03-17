@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
 from django.db import models
+from multiselectfield import MultiSelectField
 
 
 class MenuType(models.TextChoices):
@@ -8,6 +9,14 @@ class MenuType(models.TextChoices):
     LOW_CARB = 'low_carb', 'низкоуглеводное'
     VEGETARIAN = 'vegetarian', 'вегетарианское'
     KETO = 'keto', 'кето'
+
+
+class Meal(models.TextChoices):
+    BREAKFAST = 'breakfast', 'завтрак'
+    LUNCH = 'lunch', 'обед'
+    DINNER = 'dinner', 'ужин'
+    DESSERT = 'dessert', 'десерт'
+    NEW_YEAR = 'new_year', 'новогодний'
 
 
 class Allergen(models.Model):
@@ -43,13 +52,6 @@ class Product(models.Model):
 
 
 class Receipt(models.Model):
-    class Meal(models.TextChoices):
-        BREAKFAST = 'breakfast', 'завтрак'
-        LUNCH = 'lunch', 'обед'
-        DINNER = 'dinner', 'ужин'
-        DESSERT = 'dessert', 'десерт'
-        NEW_YEAR = 'new_year', 'новогодний'
-
     name = models.CharField(
         max_length=100,
         unique=True,
@@ -120,12 +122,6 @@ class Subscription(models.Model):
         on_delete=models.CASCADE
     )
 
-    menu_type = models.CharField(
-        max_length=50,
-        verbose_name='тип меню',
-        choices=MenuType.choices
-    )
-
     persons_count = models.IntegerField(
         verbose_name='количество персон',
         validators=[MinValueValidator(1)]
@@ -134,7 +130,8 @@ class Subscription(models.Model):
     excluded_allergens = models.ManyToManyField(
         Allergen,
         related_name='excluded_subscriptions',
-        verbose_name='исключенные аллергены'
+        verbose_name='исключенные аллергены',
+        blank=True
     )
 
     months_count = models.IntegerField(
@@ -152,6 +149,12 @@ class Subscription(models.Model):
         null=True,
         blank=True,
         default=None
+    )
+
+    meals = MultiSelectField(
+        choices=Meal.choices,
+        blank=True,
+        default=tuple()
     )
 
     class Meta:
