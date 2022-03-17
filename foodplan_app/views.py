@@ -8,7 +8,7 @@ from django.views.generic import CreateView
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
-from .forms import RegisterUserForm, LoginUserForm
+from .forms import RegisterUserForm, LoginUserForm, OrderForm
 
 
 class BaseViews(views.View):
@@ -18,11 +18,27 @@ class BaseViews(views.View):
         return render(request, 'base.html', context)
 
 
-class OrderViews(views.View):
-    def get(self, request, *args, **kwargs):
-        title = 'Foodplan 2021 - Меню на неделю FOODPLAN'
-        context = {'title': title}
-        return render(request, 'order.html', context)
+#class OrderViews(ListView):
+#    form_class = OrderForm
+#    template_name = 'order.html'
+#
+#    def get_context_data(self, *args, **kwargs):
+#        context = super().get_context_data(**kwargs)
+#        context['title'] = 'Foodplan 2021 - Меню на неделю FOODPLAN'
+#        return context
+
+def order(request):
+    title = 'Foodplan 2021 - Меню на неделю FOODPLAN'
+    if request.method == 'POST':
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            print(form.cleaned_data)
+            form.save()
+            #User.objects.create(**form.cleaned_data)
+            return redirect('home')
+    else:
+        form = OrderForm()
+    return render(request, 'order.html', {'form': form, 'title': title})
 
 
 class RegistrationView(CreateView):

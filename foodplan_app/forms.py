@@ -18,3 +18,8 @@ class RegisterUserForm(UserCreationForm):
 class LoginUserForm(AuthenticationForm):
     username = forms.CharField(label='Логин', widget=forms.TextInput)
     password = forms.CharField(label='Пароль', widget=forms.PasswordInput)
+
+
+
+class OrderForm(forms.Form):
+    breakfast = forms.BooleanField(label="Завтраки", required=False, initial=True)
