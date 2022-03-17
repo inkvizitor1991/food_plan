@@ -63,7 +63,8 @@ def account(request):
         if form.is_valid():
             post = form.save(commit=False)
             post.save()
-            return redirect('order')
+            return redirect('base')
     else:
         form = RegisterUserForm(instance=user)
-    return render(request, 'account.html', {'form': form, 'title': title})
+    context = {'form': form, 'title': title}
+    return render(request, 'account.html', context)
