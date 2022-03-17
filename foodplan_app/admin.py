@@ -2,8 +2,8 @@ from django.contrib import admin
 
 from .models import (Allergen,
                      Product,
-                     Receipt,
-                     ReceiptItem,
+                     Recipe,
+                     RecipeItem,
                      Subscription)
 
 
@@ -17,14 +17,14 @@ class ProductAdmin(admin.ModelAdmin):
     pass
 
 
-class ReceiptItemInline(admin.TabularInline):
-    model = ReceiptItem
+class RecipeItemInline(admin.TabularInline):
+    model = RecipeItem
     raw_id_fields = ('product',)
 
 
-@admin.register(Receipt)
+@admin.register(Recipe)
 class ReceiptAdmin(admin.ModelAdmin):
-    inlines = (ReceiptItemInline,)
+    inlines = (RecipeItemInline,)
 
 
 @admin.register(Subscription)

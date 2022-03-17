@@ -51,7 +51,7 @@ class Product(models.Model):
         verbose_name_plural = 'продукты'
 
 
-class Receipt(models.Model):
+class Recipe(models.Model):
     name = models.CharField(
         max_length=100,
         unique=True,
@@ -67,16 +67,18 @@ class Receipt(models.Model):
         verbose_name='изображение'
     )
 
-    meal = models.CharField(
-        max_length=50,
-        verbose_name='прием пищи',
-        choices=Meal.choices
+    meals = MultiSelectField(
+        verbose_name='приемы пищи',
+        choices=Meal.choices,
+        default=tuple(),
+        blank=True
     )
 
-    menu_type = models.CharField(
-        max_length=50,
-        verbose_name='тип меню',
-        choices=MenuType.choices
+    menu_types = MultiSelectField(
+        verbose_name='типы меню',
+        choices=MenuType.choices,
+        default=tuple(),
+        blank=True
     )
 
     class Meta:
@@ -84,9 +86,9 @@ class Receipt(models.Model):
         verbose_name_plural = 'рецепты'
 
 
-class ReceiptItem(models.Model):
-    receipt = models.ForeignKey(
-        Receipt,
+class RecipeItem(models.Model):
+    recipe = models.ForeignKey(
+        Recipe,
         on_delete=models.CASCADE,
         related_name='items'
     )
@@ -142,8 +144,8 @@ class Subscription(models.Model):
         verbose_name='дата последней оплаты'
     )
 
-    current_receipt = models.ForeignKey(
-        Receipt,
+    current_recipe = models.ForeignKey(
+        Recipe,
         verbose_name='текущий рецепт',
         on_delete=models.SET_NULL,
         null=True,
