@@ -100,3 +100,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+EDAMAM_APP_ID = env('EDAMAM_APP_ID', None)
+EDAMAM_APP_KEY = env('EDAMAM_APP_KEY', None)
