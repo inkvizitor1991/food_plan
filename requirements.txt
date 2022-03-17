@@ -1,4 +1,4 @@
 Django~=4.0.3
 environs~=9.5.0
 Pillow~=9.0.1
-
+django-crispy-forms~=1.14.0
