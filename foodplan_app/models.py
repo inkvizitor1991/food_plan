@@ -43,12 +43,16 @@ class Product(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        default=None
+        default=None,
+        verbose_name='аллерген'
     )
 
     class Meta:
         verbose_name = 'продукт'
         verbose_name_plural = 'продукты'
+
+    def __str__(self):
+        return self.name
 
 
 class Recipe(models.Model):
@@ -66,6 +70,10 @@ class Recipe(models.Model):
         blank=True,
         verbose_name='изображение'
     )
+    source = models.URLField(
+        blank=True,
+        verbose_name='Источник'
+    )
 
     meals = MultiSelectField(
         verbose_name='приемы пищи',
@@ -81,21 +89,32 @@ class Recipe(models.Model):
         blank=True
     )
 
+    calories = models.PositiveIntegerField(
+        verbose_name='калории',
+        blank=True,
+        default=0
+    )
+
     class Meta:
         verbose_name = 'рецепт'
         verbose_name_plural = 'рецепты'
+
+    def __str__(self):
+        return self.name
 
 
 class RecipeItem(models.Model):
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
-        related_name='items'
+        related_name='items',
+        verbose_name='рецепт'
     )
     product = models.ForeignKey(
         Product,
         on_delete=models.CASCADE,
-        related_name='receipts_items'
+        related_name='receipts_items',
+        verbose_name='продукт'
     )
 
     quantity = models.CharField(
@@ -121,7 +140,8 @@ class Subscription(models.Model):
 
     user = models.ForeignKey(
         User,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        verbose_name='пользователь'
     )
 
     persons_count = models.IntegerField(

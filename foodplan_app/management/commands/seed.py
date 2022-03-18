@@ -1,6 +1,7 @@
 from urllib.parse import urlparse
 
 import requests
+import trafilatura
 from django.conf import settings
 from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand
@@ -34,9 +35,7 @@ class Command(BaseCommand):
         recipes_to_create = []
         recipes_items_to_create = []
 
-        pages = options['pages']
-        if not pages:
-            pages = 1
+        pages = int(options['pages']) if options['pages'] else 1
         search = options['search']
         if not search:
             search = ''
@@ -95,18 +94,33 @@ class Command(BaseCommand):
                     if meal in recipe['mealType'][0]:
                         meals.append(meal)
 
-                description = recipe['url']
+                if not meals:
+                    meals.append(Meal.NEW_YEAR)
+
+                description_url = recipe['url']
+
+                downloaded_description = trafilatura.fetch_url(description_url)
+
+                if not downloaded_description:
+                    continue
+
+                description = trafilatura.extract(downloaded_description)
+
                 image_url = recipe['images']['LARGE']['url']
 
                 image_name = urlparse(image_url).path.split('/')[-1]
                 image_response = requests.get(image_url)
                 image_response.raise_for_status()
 
+                calories = int(recipe['calories'])
+
                 recipe_to_create = Recipe(
                     name=title,
                     description=description,
                     meals=meals,
-                    menu_types=diet_types
+                    menu_types=diet_types,
+                    source=description_url,
+                    calories=calories
                 )
 
                 recipe_to_create.image.save(

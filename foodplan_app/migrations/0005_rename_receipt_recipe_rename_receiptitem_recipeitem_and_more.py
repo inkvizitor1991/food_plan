@@ -4,7 +4,7 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
+    atomic = False
     dependencies = [
         ('foodplan_app', '0004_remove_receipt_meal_receipt_meals_and_more'),
     ]

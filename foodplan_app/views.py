@@ -12,6 +12,10 @@ from annoying.functions import get_object_or_None
 from .forms import RegisterUserForm, LoginUserForm, OrderForm
 from .models import Subscription
 
+from django.conf import settings
+from yookassa import Configuration, Payment
+
+
 
 class BaseViews(views.View):
     def get(self, request, *args, **kwargs):
@@ -76,3 +80,23 @@ def account(request):
         form = RegisterUserForm(instance=user)
     context = {'form': form, 'title': title, 'subscription': subscription}
     return render(request, 'account.html', context)
+
+
+class PaymentView(views.View):
+    def get(self, request, *args, **kwargs):
+        Configuration.account_id = settings.YOOKASSA_ACCOUNT_ID
+        Configuration.secret_key = settings.YOOKASSA_SECRET_KEY
+
+        payment = Payment.create({
+            "amount": {
+                "value": "100.00",
+                "currency": "RUB"
+            },
+            "confirmation": {
+                "type": "redirect",
+                "return_url": "http://127.0.0.1:8000/account/"
+            },
+            "capture": True,
+            "description": "Заказ №1"
+        })
+        return redirect(payment.confirmation.confirmation_url)
