@@ -34,9 +34,7 @@ class Command(BaseCommand):
         recipes_to_create = []
         recipes_items_to_create = []
 
-        pages = options['pages']
-        if not pages:
-            pages = 1
+        pages = int(options['pages']) if options['pages'] else 1
         search = options['search']
         if not search:
             search = ''
