@@ -43,7 +43,8 @@ class Product(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        default=None
+        default=None,
+        verbose_name='аллерген'
     )
 
     class Meta:
@@ -96,12 +97,14 @@ class RecipeItem(models.Model):
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
-        related_name='items'
+        related_name='items',
+        verbose_name='рецепт'
     )
     product = models.ForeignKey(
         Product,
         on_delete=models.CASCADE,
-        related_name='receipts_items'
+        related_name='receipts_items',
+        verbose_name='продукт'
     )
 
     quantity = models.CharField(
@@ -127,7 +130,8 @@ class Subscription(models.Model):
 
     user = models.ForeignKey(
         User,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        verbose_name='пользователь'
     )
 
     persons_count = models.IntegerField(
