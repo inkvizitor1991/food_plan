@@ -93,6 +93,9 @@ class Command(BaseCommand):
                     if meal in recipe['mealType'][0]:
                         meals.append(meal)
 
+                if not meals:
+                    meals.append(Meal.NEW_YEAR)
+
                 description = recipe['url']
                 image_url = recipe['images']['LARGE']['url']
 
