@@ -1,6 +1,7 @@
 from urllib.parse import urlparse
 
 import requests
+import trafilatura
 from django.conf import settings
 from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand
@@ -96,7 +97,15 @@ class Command(BaseCommand):
                 if not meals:
                     meals.append(Meal.NEW_YEAR)
 
-                description = recipe['url']
+                description_url = recipe['url']
+
+                downloaded_description = trafilatura.fetch_url(description_url)
+
+                if not downloaded_description:
+                    continue
+
+                description = trafilatura.extract(downloaded_description)
+
                 image_url = recipe['images']['LARGE']['url']
 
                 image_name = urlparse(image_url).path.split('/')[-1]
@@ -107,7 +116,8 @@ class Command(BaseCommand):
                     name=title,
                     description=description,
                     meals=meals,
-                    menu_types=diet_types
+                    menu_types=diet_types,
+                    source=description_url
                 )
 
                 recipe_to_create.image.save(

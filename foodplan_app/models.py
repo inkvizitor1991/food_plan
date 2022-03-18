@@ -70,6 +70,10 @@ class Recipe(models.Model):
         blank=True,
         verbose_name='изображение'
     )
+    source = models.URLField(
+        blank=True,
+        verbose_name='Источник'
+    )
 
     meals = MultiSelectField(
         verbose_name='приемы пищи',
