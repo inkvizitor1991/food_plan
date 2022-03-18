@@ -50,6 +50,9 @@ class Product(models.Model):
         verbose_name = 'продукт'
         verbose_name_plural = 'продукты'
 
+    def __str__(self):
+        return self.name
+
 
 class Recipe(models.Model):
     name = models.CharField(
@@ -84,6 +87,9 @@ class Recipe(models.Model):
     class Meta:
         verbose_name = 'рецепт'
         verbose_name_plural = 'рецепты'
+
+    def __str__(self):
+        return self.name
 
 
 class RecipeItem(models.Model):
