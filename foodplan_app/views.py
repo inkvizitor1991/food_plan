@@ -8,7 +8,9 @@ from django.views.generic import CreateView
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
+from annoying.functions import get_object_or_None
 from .forms import RegisterUserForm, LoginUserForm, OrderForm
+from .models import Subscription
 
 
 class BaseViews(views.View):
@@ -62,6 +64,7 @@ class LoginUserView(LoginView):
 @csrf_exempt
 def account(request):
     user = get_object_or_404(User, username=request.user)
+    subscription = get_object_or_None(Subscription, user__username=str(user))
     title = 'Foodplan 2021 - Меню на неделю FOODPLAN'
     if request.method == "POST":
         form = RegisterUserForm(request.POST, instance=user)
@@ -71,5 +74,5 @@ def account(request):
             return redirect('base')
     else:
         form = RegisterUserForm(instance=user)
-    context = {'form': form, 'title': title}
+    context = {'form': form, 'title': title, 'subscription': subscription}
     return render(request, 'account.html', context)
