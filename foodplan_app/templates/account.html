@@ -79,10 +79,12 @@
                                                         <small>Персоны: </small><small>{{ subscription.persons_count }}</small>
                                                     </div>
                                                     <div class="d-flex flex-row justify-content-between">
-                                                        <small>Аллергии: </small><small>нет</small>
+                                                        {% for allergen in subscription.excluded_allergens.all %}
+                                                            <small>Аллергии: </small><small>{{ allergen.name }}</small>
+                                                        {% endfor %}
                                                     </div>
                                                     <div class="d-flex flex-row justify-content-between">
-                                                        <small>Калории: </small><small>1400</small>
+                                                        <small>Калории: </small><small>{{ subscription.current_recipe.calories }}</small>
                                                     </div>
                                                     <div class="d-flex flex-row justify-content-between">
                                                         <small>Кол-во приёмов пищи: </small><small>{{ subscription.meals|length }}</small>
