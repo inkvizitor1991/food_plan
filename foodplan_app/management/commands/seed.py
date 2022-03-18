@@ -112,12 +112,15 @@ class Command(BaseCommand):
                 image_response = requests.get(image_url)
                 image_response.raise_for_status()
 
+                calories = int(recipe['calories'])
+
                 recipe_to_create = Recipe(
                     name=title,
                     description=description,
                     meals=meals,
                     menu_types=diet_types,
-                    source=description_url
+                    source=description_url,
+                    calories=calories
                 )
 
                 recipe_to_create.image.save(

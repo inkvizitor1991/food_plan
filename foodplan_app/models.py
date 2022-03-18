@@ -89,6 +89,12 @@ class Recipe(models.Model):
         blank=True
     )
 
+    calories = models.PositiveIntegerField(
+        verbose_name='калории',
+        blank=True,
+        default=0
+    )
+
     class Meta:
         verbose_name = 'рецепт'
         verbose_name_plural = 'рецепты'
