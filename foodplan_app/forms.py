@@ -65,10 +65,10 @@ class OrderForm(forms.Form):
         choices=MENU_TYPE_CHOICES,
         widget=forms.RadioSelect
     )
-    menu = forms.ChoiceField(
+    menu = forms.MultipleChoiceField(
         label="Меню",
         choices=MENU_CHOICES,
-        widget=forms.RadioSelect
+        widget=forms.CheckboxSelectMultiple,
     )
     persons_count = forms.ChoiceField(
         label="Кол-во персон",
