@@ -46,6 +46,13 @@ MENU_TYPE_CHOICES = (
     ('keto', 'кето')
 )
 
+MENU_CHOICES = (
+    ('breakfast', 'завтраки'),
+    ('lunch', 'обеды'),
+    ('dinner', 'ужины'),
+    ('dessert', 'десерты'),
+    ('new_year', 'новогоднее меню 🎁')
+)
 
 class OrderForm(forms.Form):
     months_count = forms.ChoiceField(
@@ -58,16 +65,10 @@ class OrderForm(forms.Form):
         choices=MENU_TYPE_CHOICES,
         widget=forms.RadioSelect
     )
-    breakfast = forms.BooleanField(
-        label="Завтраки", required=False,
-        initial=True
-    )
-    lunch = forms.BooleanField(label="Обеды", required=False, initial=True)
-    dinner = forms.BooleanField(label="Ужины", required=False, initial=True)
-    dessert = forms.BooleanField(label="Десерты", required=False, initial=True)
-    new_year_menu = forms.BooleanField(
-        label="Новогоднее меню 🎁",
-        required=False, initial=True
+    menu = forms.ChoiceField(
+        label="Меню",
+        choices=MENU_CHOICES,
+        widget=forms.RadioSelect
     )
     persons_count = forms.ChoiceField(
         label="Кол-во персон",

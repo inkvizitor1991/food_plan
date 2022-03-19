@@ -38,11 +38,7 @@
                     {% csrf_token %}
                     <p>{{ form.months_count|as_crispy_field }}</p>
                     <p>{{ form.menu_types|as_crispy_field }}</p>
-                    {{ form.breakfast|as_crispy_field }}
-                    {{ form.lunch|as_crispy_field }}
-                    {{ form.dinner|as_crispy_field }}
-                    {{ form.dessert|as_crispy_field }}
-                    {{ form.new_year_menu|as_crispy_field }}
+                    <p>{{ form.menu|as_crispy_field }}</p>
                     <p>{{ form.persons_count|as_crispy_field }}</p>
                     <p>{{ form.allergy|as_crispy_field }}</p>
                 <button type="submit" id="TableSubmit" class="d-none"></button>
