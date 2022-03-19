@@ -29,8 +29,7 @@ def order(request):
     if request.method == 'POST':
         form = OrderForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('home')
+            return redirect('payment')
     else:
         form = OrderForm()
     return render(request, 'order.html', {'form': form, 'title': title})
