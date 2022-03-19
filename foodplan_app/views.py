@@ -29,7 +29,6 @@ def order(request):
         form = OrderForm(request.POST)
         if form.is_valid():
             print(form.cleaned_data)
-            print(form.cleaned_data['lunch'])
             return redirect('payment')
     else:
         form = OrderForm()

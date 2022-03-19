@@ -9,7 +9,6 @@
                 <a class="navbar-brand" href="{% url 'base' %}">
                     <img src="{% static 'img/logo.8d8f24edbb5f.svg' %}" height="55" width="189" alt="">
                 </a>
-                <h3 class="text-secondary mt-2 me-2">Стоимость: 00000₽</h3>
                 <a class="btn btn-sm btn-outline-success foodplan_green foodplan__border_green" href = "{% url 'payment' %}" role="button">Оплатить</a>
             </div>
         </nav>
@@ -41,13 +40,7 @@
                     <p>{{ form.menu|as_crispy_field }}</p>
                     <p>{{ form.persons_count|as_crispy_field }}</p>
                     <p>{{ form.allergy|as_crispy_field }}</p>
-                <button type="submit" id="TableSubmit" class="d-none"></button>
-                </form>
-                <form class="card d-flex flex-row align-items-baseline mb-5 p-3 foodplan__bg_grey">
-                    <label for="exampleInputPassword1" class="form-label me-2">Промокод</label>
-                    <input type="password" class="form-control me-2" id="password">
-                    <button type="submit" class="btn btn-outline-success foodplan_green foodplan__border_green">Применить</button>
-                </form>
+                    <p>{{ form.promo_code|as_crispy_field }}</p>
                 <div class="d-flex justify-content-center my-5">
                     <button type="submit" id="btnContinue"
                         class="btn btn-outline-success foodplan_green foodplan__border_green w-50">Продолжить</button>
