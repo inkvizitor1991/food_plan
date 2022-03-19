@@ -140,13 +140,14 @@ class Command(BaseCommand):
                         )
                         existed_products[product.name] = product
 
-                    quantity = (f"{ingredient['quantity']} "
-                                f"{ingredient['measure']}")
+                    quantity = ingredient['quantity']
+                    measure = ingredient['measure']
 
                     recipe_item = RecipeItem(
                         recipe=recipe_to_create,
                         product=product,
                         quantity=quantity,
+                        measure=measure,
                         price=0
                     )
 

@@ -121,10 +121,15 @@ class RecipeItem(models.Model):
         verbose_name='продукт'
     )
 
-    quantity = models.CharField(
-        max_length=50,
-        verbose_name='количество'
+    quantity = models.PositiveIntegerField(
+        verbose_name='Количество'
     )
+
+    measure = models.CharField(
+        max_length=50,
+        verbose_name='Единица измерения'
+    )
+
     price = models.DecimalField(
         max_digits=8,
         decimal_places=2,
