@@ -144,6 +144,12 @@ class Subscription(models.Model):
         verbose_name='пользователь'
     )
 
+    menu_type = models.CharField(
+        max_length=50,
+        verbose_name='Тип меню',
+        choices=MenuType.choices
+    )
+
     persons_count = models.IntegerField(
         verbose_name='количество персон',
         validators=[MinValueValidator(1)]
