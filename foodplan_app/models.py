@@ -1,6 +1,10 @@
+from datetime import timedelta
+
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.db.models import Q
+from django.utils import timezone
 from multiselectfield import MultiSelectField
 
 
@@ -133,6 +137,24 @@ class RecipeItem(models.Model):
         verbose_name_plural = 'элементы рецепта'
 
 
+class SubscriptionQuerySet(models.QuerySet):
+    def get_active_subscriptions(self):
+        now = timezone.now()
+        before_three_months = (now - timedelta(days=90)).date()
+        before_twelve_months = (now - timedelta(days=360)).date()
+
+        return self.filter(
+            (
+                Q(months_count=Subscription.MonthCount.THREE_MONTH)
+                & Q(last_payed_at__gte=before_three_months)
+            )
+            | (
+                Q(months_count=Subscription.MonthCount.YEAR)
+                & Q(last_payed_at__gte=before_twelve_months)
+            )
+        )
+
+
 class Subscription(models.Model):
     class MonthCount(models.IntegerChoices):
         YEAR = 12, 'год'
@@ -184,6 +206,8 @@ class Subscription(models.Model):
         blank=True,
         default=tuple()
     )
+
+    objects = SubscriptionQuerySet.as_manager()
 
     class Meta:
         verbose_name = 'подписка'
