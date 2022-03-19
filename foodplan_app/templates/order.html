@@ -36,7 +36,14 @@
                 <h2><strong>Выберите подходящий тариф</strong></h2>
                 <form method="POST">
                     {% csrf_token %}
-                    {{ form|crispy }}
+                    <p>{{ form.months_count|as_crispy_field }}</p>
+                    {{ form.breakfast|as_crispy_field }}
+                    {{ form.lunch|as_crispy_field }}
+                    {{ form.dinner|as_crispy_field }}
+                    {{ form.dessert|as_crispy_field }}
+                    {{ form.new_year_menu|as_crispy_field }}
+                    <p>{{ form.persons_count|as_crispy_field }}</p>
+                    <p>{{ form.allergy|as_crispy_field }}</p>
                 <button type="submit" id="TableSubmit" class="d-none"></button>
                 </form>
                 <form class="card d-flex flex-row align-items-baseline mb-5 p-3 foodplan__bg_grey">
