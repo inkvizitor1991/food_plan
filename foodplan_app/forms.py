@@ -8,8 +8,10 @@ class RegisterUserForm(UserCreationForm):
     username = forms.CharField(label='Логин', widget=forms.TextInput)
     email = forms.EmailField(label='Email', widget=forms.EmailInput)
     password1 = forms.CharField(label='Пароль', widget=forms.PasswordInput)
-    password2 = forms.CharField(label='Повтор пароля',
-                                widget=forms.PasswordInput)
+    password2 = forms.CharField(
+        label='Повтор пароля',
+        widget=forms.PasswordInput
+    )
 
     class Meta:
         model = User
@@ -37,12 +39,23 @@ ALLERGY_CHOICES = (
     ('2', '2'),
     ('3', '3'),
 )
+MENU_TYPE_CHOICES = (
+    ('classic', 'классическое'),
+    ('low_carb', 'низкоуглеводное'),
+    ('vegetarian', 'вегетарианское'),
+    ('keto', 'кето')
+)
 
 
 class OrderForm(forms.Form):
     months_count = forms.ChoiceField(
         label="Срок",
         choices=MOUNTHS_COUNT_CHOICES,
+        widget=forms.RadioSelect
+    )
+    menu_types = forms.ChoiceField(
+        label="Тип меню",
+        choices=MENU_TYPE_CHOICES,
         widget=forms.RadioSelect
     )
     breakfast = forms.BooleanField(

@@ -16,7 +16,6 @@ from django.conf import settings
 from yookassa import Configuration, Payment
 
 
-
 class BaseViews(views.View):
     def get(self, request, *args, **kwargs):
         title = 'План питания на неделю, меню, рецепты, список покупок. Классическое меню, безуглеводное меню'
