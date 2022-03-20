@@ -44,7 +44,7 @@
                                 <li class="nav-item foodplan__tab-item">
                                     <button id="tab1" class="btn shadow-none foodplan__tab-button active" data-bs-toggle="tab" data-bs-target="#data">Персональные данные</button>
                                 </li>
-                                {% if subscription %}
+                                {% if subscriptions %}
                                 <li class="nav-item foodplan__tab-item">
                                     <button id="tab2" class="btn shadow-none foodplan__tab-button" data-bs-toggle="tab" data-bs-target="#menu">Моё меню</button>
                                 </li>
@@ -65,18 +65,28 @@
                                     </form>
                                 </div>
                                 <div class="tab-pane fade" id="menu">
+                                    {% for subscription in subscriptions %}
                                     <div class="row">
                                         <div class="col-2">
                                             <img src={{ MEDIA_URL }}{{ subscription.current_recipe.image|urlencode }} class="card-img" alt="{{ subscription.current_recipe.image }}">
                                         </div>
                                         <div class="col-10 col-md-10">
                                             <div class="row">
-                                                <div class="col-12">
-                                                    <h2>{{ subscription.current_recipe.name }}</h2>
-                                                </div>
-                                                <div class="col-md-12 col-lg-9">
-                                                    <h6>{{ subscription.current_recipe.description }}</h6>
-                                                </div>
+                                                {% if subscription.current_recipe %}
+                                                    <div class="col-12">
+                                                        <h2>{{ subscription.current_recipe.name }}</h2>
+                                                    </div>
+                                                    <div class="col-md-12 col-lg-9">
+                                                        <h6>{{ subscription.current_recipe.description }}</h6>
+                                                    </div>
+                                                {% else %}
+                                                    <div class="col-12">
+                                                        <h2>Ваш рецепт пока что не подобран</h2>
+                                                    </div>
+                                                    <div class="col-md-12 col-lg-9">
+                                                        <h6>Ожидайте время следующего приема пищи</h6>
+                                                    </div>
+                                                {% endif %}
                                                 <div class="col-md-12 col-lg-3 text-muted d-flex flex-column justify-content-between">
                                                     <div class="d-flex flex-row justify-content-between">
                                                         <small>Персоны: </small><small>{{ subscription.persons_count }}</small>
@@ -96,6 +106,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    {% endfor %}
                                 </div>
                             </div>
 
