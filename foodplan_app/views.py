@@ -29,6 +29,7 @@ def order(request):
         form = OrderForm(request.POST)
         if form.is_valid():
             print(form.cleaned_data)
+            request.session['subscription_data'] = form.cleaned_data
             return redirect('payment')
     else:
         form = OrderForm()
@@ -87,9 +88,24 @@ class PaymentView(views.View):
         Configuration.account_id = settings.YOOKASSA_ACCOUNT_ID
         Configuration.secret_key = settings.YOOKASSA_SECRET_KEY
 
+        def calculate_cost(request):
+            subscription = request.session.get('subscription_data')
+            # перенести в бд
+            menu_cost = {
+                'breakfast': 500, 'lunch': 400,
+                'dinner': 450, 'dessert': 550, 'new_year': 1000
+            }
+            menu_cost_sum = 0
+            for menu in subscription['menu']:
+                menu_cost_sum += menu_cost[menu]
+            cost = int(subscription['months_count']) * \
+                   menu_cost_sum * \
+                   int(subscription['persons_count'])
+            return str(cost)
+
         payment = Payment.create({
             "amount": {
-                "value": "100.00",
+                "value": calculate_cost(request),
                 "currency": "RUB"
             },
             "confirmation": {
@@ -97,6 +113,6 @@ class PaymentView(views.View):
                 "return_url": "http://127.0.0.1:8000/account/"
             },
             "capture": True,
-            "description": "Заказ №1"
+            "description": None
         })
         return redirect(payment.confirmation.confirmation_url)
