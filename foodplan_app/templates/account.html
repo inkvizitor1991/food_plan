@@ -72,12 +72,21 @@
                                         </div>
                                         <div class="col-10 col-md-10">
                                             <div class="row">
-                                                <div class="col-12">
-                                                    <h2>{{ subscription.current_recipe.name }}</h2>
-                                                </div>
-                                                <div class="col-md-12 col-lg-9">
-                                                    <h6>{{ subscription.current_recipe.description }}</h6>
-                                                </div>
+                                                {% if subscription.current_recipe %}
+                                                    <div class="col-12">
+                                                        <h2>{{ subscription.current_recipe.name }}</h2>
+                                                    </div>
+                                                    <div class="col-md-12 col-lg-9">
+                                                        <h6>{{ subscription.current_recipe.description }}</h6>
+                                                    </div>
+                                                {% else %}
+                                                    <div class="col-12">
+                                                        <h2>Ваш рецепт пока что не подобран</h2>
+                                                    </div>
+                                                    <div class="col-md-12 col-lg-9">
+                                                        <h6>Ожидайте время следующего приема пищи</h6>
+                                                    </div>
+                                                {% endif %}
                                                 <div class="col-md-12 col-lg-3 text-muted d-flex flex-column justify-content-between">
                                                     <div class="d-flex flex-row justify-content-between">
                                                         <small>Персоны: </small><small>{{ subscription.persons_count }}</small>
