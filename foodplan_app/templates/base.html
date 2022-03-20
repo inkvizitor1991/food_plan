@@ -18,7 +18,15 @@
                 <a class="navbar-brand" href="{% url 'base' %}">
                     <img src="{% static 'img/logo.8d8f24edbb5f.svg' %}" height="55" width="189" alt="">
                 </a>
-                <a class="btn btn-outline-success foodplan_green foodplan__border_green" href="{% url 'login' %}" role="button">Войти</a>
+                <li class="nav-item align-items-center d-md-flex flex-grow-1 justify-content-end">
+                {% if not request.user.is_authenticated %}
+                    <a class="btn btn-outline-success foodplan_green foodplan__border_green" href="{% url 'login' %}" role="button">Авторизация</a>
+                    <a class="btn btn-outline-success foodplan_green foodplan__border_green" href="{% url 'registration' %}" role="button">Регистрация</a>
+                {% else %}
+                    <a class="btn btn-outline-success foodplan_green foodplan__border_green" href="{% url 'account' %}" role="button">Личный кабинет</a>
+                    <a class="btn btn-outline-success foodplan_green foodplan__border_green" href="{% url 'logout' %}" role="button">Выйти</a>
+                {% endif %}
+                </li>
             </div>
         </nav>
     </header>
@@ -33,7 +41,11 @@
                             Вы получаете рецепты + список продуктов.<br>
                             Больше не нужно думать, что готовить.</h4>
                         <div class="d-block mt-3">
-                            <a class="btn btn-outline-success foodplan_green foodplan__border_green" href="{% url 'order' %}" role="button">Хочу попробовать</a>
+                            {% if not request.user.is_authenticated %}
+                                <a class="btn btn-outline-success foodplan_green foodplan__border_green" href="{% url 'login' %}" role="button">Хочу попробовать</a>
+                            {% else %}
+                                <a class="btn btn-outline-success foodplan_green foodplan__border_green" href="{% url 'order' %}" role="button">Хочу попробовать</a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
