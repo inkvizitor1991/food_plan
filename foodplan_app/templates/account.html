@@ -9,7 +9,10 @@
                 <a class="navbar-brand" href="{% url 'base' %}">
                     <img src="{% static 'img/logo.8d8f24edbb5f.svg' %}" height="55" width="189" alt="">
                 </a>
-                <a class="btn btn-outline-success foodplan_green foodplan__border_green" href="{% url 'base' %}" role="button">Выйти</a>
+                <li class="nav-item align-items-center d-md-flex flex-grow-1 justify-content-end">
+                    <a class="btn btn-outline-success foodplan_green foodplan__border_green" href="{% url 'order' %}" role="button">Подписка</a>
+                    <a class="btn btn-outline-success foodplan_green foodplan__border_green" href="{% url 'base' %}" role="button">Выйти</a>
+                </li>
             </div>
         </nav>
     </header>
