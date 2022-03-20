@@ -67,7 +67,8 @@ class LoginUserView(LoginView):
 @csrf_exempt
 def account(request):
     user = get_object_or_404(User, username=request.user)
-    subscription = get_object_or_None(Subscription, user__username=str(user))
+    subscriptions = (Subscription.objects.get_active_subscriptions()
+                                         .filter(user__username=str(user)))
     title = 'Foodplan 2021 - Меню на неделю FOODPLAN'
     if request.method == "POST":
         form = RegisterUserForm(request.POST, instance=user)
@@ -77,7 +78,7 @@ def account(request):
             return redirect('base')
     else:
         form = RegisterUserForm(instance=user)
-    context = {'form': form, 'title': title, 'subscription': subscription}
+    context = {'form': form, 'title': title, 'subscriptions': subscriptions}
     return render(request, 'account.html', context)
 
 
