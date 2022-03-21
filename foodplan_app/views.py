@@ -5,6 +5,8 @@ import uuid
 from django import views
 
 from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
@@ -31,6 +33,7 @@ class BaseViews(views.View):
         return render(request, 'base.html', context)
 
 
+@login_required(login_url='/login/')
 def order(request):
     title = 'Foodplan 2021 - Меню на неделю FOODPLAN'
     if request.method == 'POST':
@@ -121,7 +124,9 @@ def calculate_cost(subscription):
     return str(cost)
 
 
-class PaymentView(views.View):
+class PaymentView(LoginRequiredMixin, views.View):
+    raise_exception = True
+
     def get(self, request, *args, **kwargs):
         Configuration.account_id = settings.YOOKASSA_ACCOUNT_ID
         Configuration.secret_key = settings.YOOKASSA_SECRET_KEY
