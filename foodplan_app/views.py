@@ -1,19 +1,27 @@
+import threading
+import time
+import uuid
+
 from django import views
 
 from django.contrib.auth import login
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.views.generic import CreateView
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from annoying.functions import get_object_or_None
 from .forms import RegisterUserForm, LoginUserForm, OrderForm
-from .models import Subscription
+from .models import Subscription, Allergen
 
 from django.conf import settings
 from yookassa import Configuration, Payment
+
+
+temped_subscriptions = {}
 
 
 class BaseViews(views.View):
@@ -83,36 +91,83 @@ def account(request):
     return render(request, 'account.html', context)
 
 
+def check_payment_until_confirm(payment_id, subscription_uuid):
+    while True:
+        payment = Payment.find_one(payment_id)
+        if payment.status == "canceled":
+            temped_subscriptions.pop(subscription_uuid)
+            return
+        if payment.status == "succeeded":
+            subscription = temped_subscriptions[subscription_uuid]
+            subscription.last_payed_at = timezone.now().date()
+            subscription.save()
+            return
+
+        time.sleep(5)
+
+
+def calculate_cost(subscription):
+    # перенести в бд
+    meal_cost = {
+        'breakfast': 500, 'lunch': 400,
+        'dinner': 450, 'dessert': 550, 'new_year': 1000
+    }
+    meal_cost_sum = 0
+    for meal in subscription['meals']:
+        meal_cost_sum += meal_cost[meal]
+    cost = (int(subscription['months_count'])
+            * meal_cost_sum
+            * int(subscription['persons_count']))
+    return str(cost)
+
+
 class PaymentView(views.View):
     def get(self, request, *args, **kwargs):
         Configuration.account_id = settings.YOOKASSA_ACCOUNT_ID
         Configuration.secret_key = settings.YOOKASSA_SECRET_KEY
 
-        def calculate_cost(request):
-            subscription = request.session.get('subscription_data')
-            # перенести в бд
-            menu_cost = {
-                'breakfast': 500, 'lunch': 400,
-                'dinner': 450, 'dessert': 550, 'new_year': 1000
-            }
-            menu_cost_sum = 0
-            for menu in subscription['menu']:
-                menu_cost_sum += menu_cost[menu]
-            cost = int(subscription['months_count']) * \
-                   menu_cost_sum * \
-                   int(subscription['persons_count'])
-            return str(cost)
+        subscription = request.session.get('subscription_data')
+
+        subscription_uuid = uuid.uuid4()
 
         payment = Payment.create({
             "amount": {
-                "value": calculate_cost(request),
+                "value": calculate_cost(subscription),
                 "currency": "RUB"
             },
             "confirmation": {
                 "type": "redirect",
-                "return_url": "http://127.0.0.1:8000/account/"
+                "return_url": f"http://127.0.0.1:8000/account/"
             },
             "capture": True,
             "description": None
         })
+
+        prepared_subscription = Subscription()
+
+        prepared_subscription.user = request.user
+        prepared_subscription.menu_type = subscription['menu_type']
+        prepared_subscription.meals = subscription['meals']
+        prepared_subscription.months_count = int(subscription['months_count'])
+        prepared_subscription.persons_count = int(
+            subscription['persons_count']
+        )
+
+        allergens_ids = [
+            int(allergen_id) for allergen_id in subscription['allergens']
+        ]
+
+        allergens = Allergen.objects.filter(pk__in=allergens_ids)
+
+        for allergen in allergens:
+            prepared_subscription.excluded_allergens.add(allergen)
+
+        temped_subscriptions[subscription_uuid] = prepared_subscription
+
+        threading.Thread(
+            target=check_payment_until_confirm,
+            args=[payment.id, subscription_uuid],
+            daemon=True
+        ).start()
+
         return redirect(payment.confirmation.confirmation_url)
