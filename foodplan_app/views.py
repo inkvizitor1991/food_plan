@@ -5,21 +5,21 @@ import uuid
 from django import views
 
 from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.utils import timezone
 from django.views.generic import CreateView
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
-
-from .forms import RegisterUserForm, LoginUserForm, OrderForm
+from .forms import RegisterUserForm, LoginUserForm, get_order_form
 from .models import Subscription, Allergen
 
 from django.conf import settings
 from yookassa import Configuration, Payment
-
 
 temped_subscriptions = {}
 
@@ -31,16 +31,17 @@ class BaseViews(views.View):
         return render(request, 'base.html', context)
 
 
+@login_required(login_url='/login/')
 def order(request):
     title = 'Foodplan 2021 - Меню на неделю FOODPLAN'
     if request.method == 'POST':
-        form = OrderForm(request.POST)
+        form = get_order_form()(request.POST)
         if form.is_valid():
             print(form.cleaned_data)
             request.session['subscription_data'] = form.cleaned_data
             return redirect('payment')
     else:
-        form = OrderForm()
+        form = get_order_form()
     return render(request, 'order.html', {'form': form, 'title': title})
 
 
@@ -77,7 +78,7 @@ class LoginUserView(LoginView):
 def account(request):
     user = get_object_or_404(User, username=request.user)
     subscriptions = (Subscription.objects.get_active_subscriptions()
-                                         .filter(user__username=str(user)))
+                     .filter(user__username=str(user)))
     title = 'Foodplan 2021 - Меню на неделю FOODPLAN'
     if request.method == "POST":
         form = RegisterUserForm(request.POST, instance=user)
@@ -107,6 +108,7 @@ def check_payment_until_confirm(payment_id, subscription_uuid):
 
 
 def calculate_cost(subscription):
+    # перенести в бд
     meal_cost = {
         'breakfast': 500, 'lunch': 400,
         'dinner': 450, 'dessert': 550, 'new_year': 1000
@@ -120,7 +122,9 @@ def calculate_cost(subscription):
     return str(cost)
 
 
-class PaymentView(views.View):
+class PaymentView(LoginRequiredMixin, views.View):
+    raise_exception = True
+
     def get(self, request, *args, **kwargs):
         Configuration.account_id = settings.YOOKASSA_ACCOUNT_ID
         Configuration.secret_key = settings.YOOKASSA_SECRET_KEY
@@ -136,7 +140,7 @@ class PaymentView(views.View):
             },
             "confirmation": {
                 "type": "redirect",
-                "return_url": "http://127.0.0.1:8000/account/"
+                "return_url": request.build_absolute_uri(reverse('account'))
             },
             "capture": True,
             "description": None
