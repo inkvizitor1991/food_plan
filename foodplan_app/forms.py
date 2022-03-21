@@ -73,6 +73,6 @@ class OrderForm(forms.Form):
 
     def clean_promo_code(self):
         promo_code = self.cleaned_data['promo_code']
-        if promo_code and promo_code != '2022':#промкод желательно из бд достать
+        if promo_code and promo_code != '2022':
             raise forms.ValidationError('Промкод не верный')
         return promo_code

@@ -13,7 +13,7 @@ from django.views.generic import CreateView
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
-from annoying.functions import get_object_or_None
+
 from .forms import RegisterUserForm, LoginUserForm, OrderForm
 from .models import Subscription, Allergen
 
@@ -107,7 +107,6 @@ def check_payment_until_confirm(payment_id, subscription_uuid):
 
 
 def calculate_cost(subscription):
-    # перенести в бд
     meal_cost = {
         'breakfast': 500, 'lunch': 400,
         'dinner': 450, 'dessert': 550, 'new_year': 1000
@@ -137,7 +136,7 @@ class PaymentView(views.View):
             },
             "confirmation": {
                 "type": "redirect",
-                "return_url": f"http://127.0.0.1:8000/account/"
+                "return_url": "http://127.0.0.1:8000/account/"
             },
             "capture": True,
             "description": None
