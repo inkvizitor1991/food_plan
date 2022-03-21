@@ -7,7 +7,7 @@ from django import views
 from django.contrib.auth import login
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.utils import timezone
 from django.views.generic import CreateView
 from django.contrib.auth.models import User
@@ -137,7 +137,7 @@ class PaymentView(views.View):
             },
             "confirmation": {
                 "type": "redirect",
-                "return_url": f"http://127.0.0.1:8000/account/"
+                "return_url": request.build_absolute_uri(reverse('account'))
             },
             "capture": True,
             "description": None
