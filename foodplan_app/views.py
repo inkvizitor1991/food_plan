@@ -16,7 +16,7 @@ from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from annoying.functions import get_object_or_None
-from .forms import RegisterUserForm, LoginUserForm, OrderForm
+from .forms import RegisterUserForm, LoginUserForm, get_order_form
 from .models import Subscription, Allergen
 
 from django.conf import settings
@@ -37,13 +37,13 @@ class BaseViews(views.View):
 def order(request):
     title = 'Foodplan 2021 - Меню на неделю FOODPLAN'
     if request.method == 'POST':
-        form = OrderForm(request.POST)
+        form = get_order_form()(request.POST)
         if form.is_valid():
             print(form.cleaned_data)
             request.session['subscription_data'] = form.cleaned_data
             return redirect('payment')
     else:
-        form = OrderForm()
+        form = get_order_form()
     return render(request, 'order.html', {'form': form, 'title': title})
 
 
